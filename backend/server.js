@@ -5,7 +5,7 @@ const connectDB = require("./src/db/db");
 
 connectDB();
 
-app.listen(3000,() => {
-    console.log("server started at 3000");
+app.listen(process.env.PORT,() => {
+    console.log(`server started at ${process.env.PORT}`);
 })
 
