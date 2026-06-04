@@ -43,10 +43,14 @@ async function likeFood(req, res) {
     const { foodId } = req.body;
     const user = req.user;
 
+    console.log("req.user:", req.user);
+console.log("foodId:", foodId);
+
     const isAlreadyLiked = await likeModel.findOne({
       user: user._id,
       food: foodId,
     });
+
 
     if (isAlreadyLiked) {
       await likeModel.deleteOne({
@@ -144,7 +148,6 @@ async function getSaveFood(req,res) {
     })
     
 }
-
 
 module.exports = {
   createFood,

@@ -1,24 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  --color-bg-light: #E7F2EF;
-  --color-bg-dark: #19183B;
-  --color-text-light: #19183B;
-  --color-text-dark: #E7F2EF;
-  /* --color-primary: #708993; */
-  --color-primary: #6C63FF;
-  --color-border: #A1C2BD;
-  --border-radius: 10px;
-  --input-bg-light: #fff;
-  --input-bg-dark: #708993;
+
+  /* Typography */
+  --font-primary: 'Libre Franklin', sans-serif;
+
+  /* Brand Colors */
+  --color-primary: #DC2626;
+  --color-primary-hover: #B91C1C;
+
+  /* Backgrounds */
+  --color-bg: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-light: #FAFAFA;
+
+  /* Text */
+  --color-text: #111111;
+  --color-text-secondary: #6B7280;
+
+  /* Border */
+  --color-border: #E5E7EB;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Animation */
+  --transition: all 0.3s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg-light: #19183B;
-    --color-bg-dark: #19183B;
-    --color-text-light: #E7F2EF;
-    --color-text-dark: #E7F2EF;
-    --input-bg-light: #708993;
-    --input-bg-dark: #708993;
-    --color-border: #A1C2BD;
-  }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:var(--font-primary);
+  background:var(--color-bg);
+  color:var(--color-text);
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:var(--font-primary);
+}
+
+a{
+  text-decoration:none;
+}
+
+img{
+  max-width:100%;
+  display:block;
 }

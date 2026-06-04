@@ -4,15 +4,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background: linear-gradient(#6C63FF,#fff); */
-  background-color: black;
+  background-color: var(--color-bg);
   height: 100vh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   font-family: sans-serif;
 }
 .reels-feed {
-  /* border: 2px solid red; */
   width: 100%;
   max-width: 320px;
 }
@@ -31,7 +29,6 @@
   object-fit: cover;
 }
 .reel-overlay {
-  /* border: 2px solid red; */
   position: absolute;
   bottom: 50px;
   left: 0;
@@ -43,7 +40,6 @@
 }
 
 .reel-description {
-  /* border: 2px solid yellow; */
   font-size: 16px;
   margin-bottom: 10px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
@@ -64,8 +60,6 @@
   background-color: #e60046;
 }
 
-
-/* --- RIGHT SIDE ACTION BAR --- */
 .right-buttons {
   position: absolute;
   right: 15px;
@@ -73,11 +67,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;   /* More balanced space */
+  gap: 20px;
   z-index: 10;
 }
 
-/* ICON BUTTON */
 .icon-btn {
   background: rgba(0,0,0,0.45);
   backdrop-filter: blur(6px);
@@ -91,7 +84,6 @@
   align-items: center;
 }
 
-/* ICON COUNT */
 .count {
   font-size: 14px;
   color: white;
@@ -102,15 +94,12 @@
   font-weight: 500;
 }
 
-/* Make sure icon + count stay together */
 .action-group {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-
-/* ---------- COMMENT POPUP ---------- */
 .comment-popup {
   position: fixed;
   bottom: 0;
@@ -151,13 +140,9 @@
   to   { transform: translateY(0); }
 }
 
-/* ---------- BOTTOM NAVIGATION ---------- */
 .bottom-nav {
-  /* border: 2px solid red; */
   position: fixed;
   bottom: 0;
-  /* left: 50%;
-  transform: translateX(-50%); */
   height: 40px;
   width: 100%;
   max-width: 320px;
@@ -166,8 +151,6 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  /* border-radius: 18px 18px 0 0;
-  padding: 5px 10px; */
 }
 
 .nav-btn {

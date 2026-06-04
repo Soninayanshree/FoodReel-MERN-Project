@@ -2,7 +2,7 @@ import React from 'react';
 import "../../styles/form.css"
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-import user_img from '../../assets/images/user_registeration_img.png';
+import user_img from '../../assets/images/register.png';
 
 const UserRegister = () => {
   const navigate = useNavigate();

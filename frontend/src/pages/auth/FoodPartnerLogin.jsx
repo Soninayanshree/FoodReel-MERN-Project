@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/form.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import foodpartner_login_img from "../../assets/images/user_login_img.png";
+import foodpartner_login_img from "../../assets/images/user_login_img1.png";
 
 const FoodPartnerLogin = () => {
   const navigate = useNavigate();
