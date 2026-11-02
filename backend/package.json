@@ -1,13 +1,19 @@
 {
-  "name": "backend",
+  "name": "foodreel-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "FoodReel backend API",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "foodreel",
+    "mern",
+    "express",
+    "mongodb"
+  ],
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",

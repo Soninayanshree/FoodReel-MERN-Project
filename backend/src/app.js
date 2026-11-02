@@ -1,28 +1,47 @@
-//create server
-const express = require("express");//import express
-const cookieParser = require("cookie-parser");//import cookie parser
-const authRoutes = require("./routes/auth.routes");//import auth routes
-const foodRoutes = require("./routes/food.routes");//import food routes
-const commentRoutes = require("./routes/comment.routes");//import comment routes
-const cors = require("cors");//import cors for cross origin resource sharing
-const foodPartnerRoutes = require("./routes/food-partner.routes");
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
-const app = express();//instanctiate express
+const corsOptions = require("./config/cors");
+const apiRoutes = require("./routes");
+const errorMiddleware = require("./middlewares/error.middleware");
 
-app.use(express.json());//to accept json data
-app.use(cookieParser());//to parse cookies
-app.use(cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
-    credentials: true, // Allow cookies to be sent
-}));//to allow cross origin resource sharing
+const app = express();
 
-app.get("/",(req,res) => {
-    res.send("hello nayan")
+// Security and request configuration
+app.disable("x-powered-by");
+
+app.use(cors(corsOptions));
+
+app.use(express.json({ limit: "10mb" }));
+
+app.use(express.urlencoded({
+    extended: true,
+    limit: "10mb",
+}));
+
+app.use(cookieParser());
+
+// Health check
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "FoodReel API is running",
+    });
 });
 
-app.use("/api/auth",authRoutes);//use auth routes
-app.use("/api/food",foodRoutes);//use food routes
-app.use('/api/food-partner',foodPartnerRoutes);//use food-partner routes
-app.use("/api",commentRoutes);
+// API routes
+app.use("/api", apiRoutes);
 
-module.exports = app;//export app
+// Handle unknown routes
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `Route not found: ${req.method} ${req.originalUrl}`,
+    });
+});
+
+// Centralized error handler (must be last)
+app.use(errorMiddleware);
+
+module.exports = app;

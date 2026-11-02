@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
-require("dotenv").config();//import dotenv to read .env file
+const env = require("../config/env");
 
-function connectDB(){
-    mongoose.connect(process.env.MONGODB_URL)
-    .then(() => {
-        console.log("MongoDB connected")
-    })
-    .catch((err) => {
-        console.log("Error:" , err)
-    })
-}
+const connectDB = async () => {
+    try {
+        await mongoose.connect(env.MONGODB_URL);
+
+        console.log("MongoDB connected successfully");
+
+        return mongoose.connection;
+    } catch (error) {
+        console.error("MongoDB connection failed:", error.message);
+
+        throw error;
+    }
+};
 
 module.exports = connectDB;
