@@ -3,6 +3,7 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const foodController = require("../controllers/food.controller");
 const router = express.Router();
 const multer = require("multer"); //import multer for file upload
+const validateFoodId = require("../middlewares/validateFoodId.middleware");
 
 
 //configure multer to store files in memory
@@ -22,24 +23,26 @@ router.post(
 
 router.get(
     "/",
-    authMiddleware.authUserMiddleware,
     foodController.getFoodItems);
 
 router.post(
   "/like",
   authMiddleware.authUserMiddleware,
+  validateFoodId,
   foodController.likeFood
 );
 
 router.post(
   "/save",
   authMiddleware.authUserMiddleware,
+  validateFoodId,
   foodController.saveFood
 );
 
 router.get(
   "/save",
   authMiddleware.authUserMiddleware,
+  validateFoodId,
   foodController.getSaveFood
 );
 

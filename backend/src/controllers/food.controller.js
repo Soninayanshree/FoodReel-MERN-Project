@@ -1,15 +1,36 @@
-const e = require("express");
 const foodModel = require("../models/food.model");
 const likeModel = require("../models/likes.model");
 const saveModel = require("../models/save.model");
-const commentModel = require("../models/comment.model");
 const storageService = require("../services/storage.service");
 const { v4: uuid } = require("uuid"); // Generate unique identifiers
 
-async function createFood(req, res) {
+async function createFood(req, res, next) {
   // console.log(req.foodPartner);
   // console.log(req.body);
   // console.log(req.file); // Access the uploaded video file
+  try {
+    // Get idempotency key from request header
+    const idempotencyKey = req.headers["idempotency-key"];
+
+    // Check if idempotency key is provided
+    if (!idempotencyKey) {
+      const error = new Error("Idempotency-Key header is required");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    // Check if this request was already processed
+    const existingFood = await foodModel.findOne({
+    foodPartner: req.foodPartner._id,
+    idempotencyKey
+});
+
+    if (existingFood) {
+      return res.status(200).json({
+        message: "Food item already created",
+        food: existingFood,
+      });
+    }
 
   const fileUploadResult = await storageService.uploadFile(
     req.file.buffer,
@@ -22,12 +43,15 @@ async function createFood(req, res) {
     description: req.body.description,
     video: fileUploadResult.url,
     foodPartner: req.foodPartner._id,
+    idempotencyKey,
   });
 
   res.status(201).json({
     message: "Food item created successfully",
     food: foodItem, // Return the created food item
-  });
+  });}catch (err) {
+    next(err); // Pass the error to the error handling middleware
+  }
 }
 
 async function getFoodItems(req, res) {
@@ -38,26 +62,35 @@ async function getFoodItems(req, res) {
   });
 }
 
-async function likeFood(req, res) {
+
+async function likeFood(req, res, next) {
   try {
     const { foodId } = req.body;
     const user = req.user;
 
-    console.log("req.user:", req.user);
-console.log("foodId:", foodId);
+    // Check if food exists in database
+    const food = await foodModel.findById(foodId);
 
+    if (!food) {
+      const error = new Error("Food not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Check if user has already liked this food
     const isAlreadyLiked = await likeModel.findOne({
       user: user._id,
       food: foodId,
     });
 
-
+    // If already liked, remove the like
     if (isAlreadyLiked) {
       await likeModel.deleteOne({
         user: user._id,
         food: foodId,
       });
 
+      // Decrease like count
       await foodModel.findByIdAndUpdate(foodId, {
         $inc: { likeCount: -1 },
       });
@@ -68,11 +101,13 @@ console.log("foodId:", foodId);
       });
     }
 
+    // Create a new like
     await likeModel.create({
       user: user._id,
       food: foodId,
     });
 
+    // Increase like count
     await foodModel.findByIdAndUpdate(foodId, {
       $inc: { likeCount: 1 },
     });
@@ -81,28 +116,42 @@ console.log("foodId:", foodId);
       message: "Food liked successfully",
       liked: true,
     });
+
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(err);
   }
 }
 
-async function saveFood(req, res) {
+
+
+async function saveFood(req, res, next) {
   try {
     const { foodId } = req.body;
     const user = req.user;
 
+    // Check if food exists in database
+    const food = await foodModel.findById(foodId);
+
+    if (!food) {
+      const error = new Error("Food not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Check if user has already saved this food
     const isAlreadySaved = await saveModel.findOne({
       user: user._id,
       food: foodId,
     });
 
+    // If already saved, remove it from saved foods
     if (isAlreadySaved) {
       await saveModel.deleteOne({
         user: user._id,
         food: foodId,
       });
 
+      // Decrease save count
       await foodModel.findByIdAndUpdate(foodId, {
         $inc: { savesCount: -1 },
       });
@@ -113,11 +162,13 @@ async function saveFood(req, res) {
       });
     }
 
+    // Create a new save
     await saveModel.create({
       user: user._id,
       food: foodId,
     });
 
+    // Increase save count
     await foodModel.findByIdAndUpdate(foodId, {
       $inc: { savesCount: 1 },
     });
@@ -126,11 +177,12 @@ async function saveFood(req, res) {
       message: "Food saved successfully",
       saved: true,
     });
+
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(err);
   }
 }
+
 
 async function getSaveFood(req,res) {
     const user = req.user;

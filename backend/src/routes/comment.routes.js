@@ -5,7 +5,7 @@ const { addComment, getComments } = require("../controllers/comment.controller")
 const validateFoodId = require("../middlewares/validateFoodId.middleware");
 
 // POST /api/comment
-router.post("/comment", authMiddleware.authUserMiddleware, addComment);
+router.post("/comment", authMiddleware.authUserMiddleware,validateFoodId, addComment);
 
 // GET /api/comments/:foodId
 router.get("/comments/:foodId", validateFoodId, getComments);

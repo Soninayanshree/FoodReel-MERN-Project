@@ -1,29 +1,33 @@
-const mongoose = require("mongoose");
+
 const commentModel = require("../models/comment.model");
 const foodModel = require("../models/food.model");
 
-async function addComment(req, res){
+async function addComment(req, res, next) {
   try {
     const { foodId, text } = req.body;
     const user = req.user;
 
+    // Check if comment text is empty
     if (!text || !text.trim()) {
-      return res.status(400).json({ message: "Comment cannot be empty" });
+      const error = new Error("Comment cannot be empty");
+      error.statusCode = 400;
+      return next(error);
     }
 
+    // Check if food exists in database
     const food = await foodModel.findById(foodId);
 
     if (!food) {
-      return res.status(404).json({
-        message: "Food not found"
-      });
+      const error = new Error("Food not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
     // Add comment to DB
     const comment = await commentModel.create({
       user: user._id,
       food: foodId,
-      text,
+      text: text.trim(),
     });
 
     // Increase comment count on food
@@ -31,46 +35,46 @@ async function addComment(req, res){
       $inc: { commentCount: 1 }
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Comment added successfully",
       comment,
     });
 
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
-};
+}
 
-async function getComments (req, res){
+async function getComments(req, res, next) {
   try {
     const { foodId } = req.params;
 
+    // Check if food exists in database
     const food = await foodModel.findById(foodId);
 
     if (!food) {
-      return res.status(404).json({
-        message: "Food not found"
-      });
+      const error = new Error("Food not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
+    // Fetch comments with user details
     const comments = await commentModel
       .find({ food: foodId })
-      .populate("user", "fullName email")  // only send safe user fields
-      .sort({ createdAt: -1 });       // latest first
+      .populate("user", "fullName email") // only send safe user fields
+      .sort({ createdAt: -1 }); // latest first
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Comments fetched successfully",
       comments,
     });
 
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
-};
+}
 
 module.exports = {
-    addComment,
-    getComments
-}
+  addComment,
+  getComments
+};

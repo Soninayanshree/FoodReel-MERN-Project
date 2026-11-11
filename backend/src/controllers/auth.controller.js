@@ -2,9 +2,10 @@ const userModel = require("../models/user.model");//import user model
 const foodPartnerModel = require("../models/foodpartner.model");//import food partner model
 const bcrypt = require("bcryptjs");//import bcrypt for password hashing
 const jwt = require("jsonwebtoken");//import jwt for token generation
+const ROLES = require("../../constants/roles");//import roles
 
 async function registerUser(req,res){//register user function
-
+try{
     const {fullName,email,password} = req.body;
 
     const isUserAlreadyExists =await userModel.findOne({email});//check if user already exists
@@ -23,6 +24,7 @@ async function registerUser(req,res){//register user function
 
     const token = jwt.sign({
         id : user._id,
+        role : ROLES.USER
     },process.env.JWT_SECRET)
 
     res.cookie("token", token);//set cookie
@@ -34,10 +36,22 @@ async function registerUser(req,res){//register user function
             email: user.email,
             fullName: user.fullName,
         }
-    })
+    })}
+    catch(err){
+        if (err.code === 11000) {
+            return res.status(409).json({
+                message: "User already exists with this email"
+            });
+        }
+        console.log(err);
+        res.status(500).json({
+            message : "Internal server error"
+        })
+    }
 }
 
 async function loginUser(req,res){//login user function
+    try{
     const {email,password} = req.body;
 
     const user = await userModel.findOne({email});//find user by email
@@ -58,6 +72,7 @@ async function loginUser(req,res){//login user function
     
     const token = jwt.sign({
         id : user._id,
+        role : ROLES.USER
     },process.env.JWT_SECRET)//generate token
 
     res.cookie("token", token);//set cookie
@@ -71,7 +86,12 @@ async function loginUser(req,res){//login user function
             token
         }
         })
-
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            message : "Internal server error"
+        })
+    }
 }
 
 async function logoutUser(req,res){//logout user function
@@ -82,6 +102,7 @@ async function logoutUser(req,res){//logout user function
 }
 
 async function registerFoodPartner(req,res){//register food partner function
+    try{
     console.log("Headers:", req.headers);
      console.log("Request body:", req.body);
 
@@ -106,6 +127,7 @@ async function registerFoodPartner(req,res){//register food partner function
 
     const token = jwt.sign({
         id : foodPartner._id,
+        role : ROLES.FOOD_PARTNER
     },process.env.JWT_SECRET)
 
     res.cookie("token", token);//set cookie
@@ -119,11 +141,24 @@ async function registerFoodPartner(req,res){//register food partner function
             address: foodPartner.address,
             name: foodPartner.name,
         }
-    })
+    })}catch(err){
+        if (err.code === 11000) {
+            const field = Object.keys(err.keyPattern || {})[0];
+
+            return res.status(409).json({
+                message: `Food partner already exists with this ${field}`
+            });
+        }
+        console.log(err);
+        res.status(500).json({
+            message : "Internal server error"
+        })
+    }
 }
 
 async function loginFoodPartner(req,res){//login food partner function
-    const {email,password} = req.body;
+    try{
+        const {email,password} = req.body;
 
     const foodPartner = await foodPartnerModel.findOne({email});//find food partner by email
 
@@ -142,6 +177,7 @@ async function loginFoodPartner(req,res){//login food partner function
     }
     const token = jwt.sign({
         id : foodPartner._id,
+        role : ROLES.FOOD_PARTNER
     },process.env.JWT_SECRET)//generate token
 
     res.cookie("token", token);//set cookie
@@ -151,9 +187,15 @@ async function loginFoodPartner(req,res){//login food partner function
         foodPartner:{
             _id : foodPartner._id,
             email : foodPartner.email,
-            name : foodPartner.name
+            name : foodPartner.name,
+            token
         }
-    })
+    })}catch(err){
+        console.log(err);
+        res.status(500).json({
+            message : "Internal server error"
+        })
+    }
 }
 
 async function logoutFoodPartner(req,res){//logout food partner function

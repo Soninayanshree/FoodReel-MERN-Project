@@ -33,8 +33,17 @@ const foodSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         min: 0
-    }
+    },
+        idempotencyKey: {
+        type: String,
+        sparse: true
+    },
 });
+// Ensure idempotency key is unique for each food partner
+foodSchema.index(
+    { foodPartner: 1, idempotencyKey: 1 },
+    { unique: true, sparse: true }
+);
 
 const foodModel = mongoose.model('food', foodSchema);
 
