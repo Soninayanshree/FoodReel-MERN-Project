@@ -62,11 +62,11 @@ const errorMiddleware = (err, req, res, next) => {
     // Send response
     res.status(statusCode).json({
         success: false,
-        message,
-        ...(process.env.NODE_ENV === "development" && {
-            stack: err.stack,
-        }),
+        message: err.details
+            ? err.details.map((detail) => detail.message).join(", ")
+            : message,
     });
+
 };
 
 module.exports = errorMiddleware;
