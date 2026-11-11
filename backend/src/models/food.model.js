@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const foodSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     video:{
         type: String,
@@ -11,6 +12,7 @@ const foodSchema = new mongoose.Schema({
     },
     description:{
         type: String,
+        trim: true
     },
     foodPartner:{
         type: mongoose.Schema.Types.ObjectId,
@@ -20,14 +22,17 @@ const foodSchema = new mongoose.Schema({
     likeCount:{
         type: Number,
         default: 0,
+        min: 0
     },
     savesCount:{
         type: Number,
         default: 0,
+        min: 0
     },
     commentCount:{
         type: Number,
         default: 0,
+        min: 0
     }
 });
 

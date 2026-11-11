@@ -1,6 +1,6 @@
+const env = require("./src/config/env");
 const app = require("./src/app");
 const connectDB = require("./src/db/db");
-const env = require("./src/config/env");
 
 const mongoose = require("mongoose");
 

@@ -3,16 +3,19 @@ const mongoose = require("mongoose");//import mongoose
 const userSchema = new mongoose.Schema({//user schema is created
     fullName : {
         type : String,
-        require : true
+        required : true,
+        trim: true
     },
     email : {
         type : String,
-        require : true,
-        unquie : true
+        required: true,
+        unquie : true,
+        lowercase: true,
+        trim: true
     },
     password : {
         type : String,
-        require : true,
+        required : true,
     },
 },
 {  

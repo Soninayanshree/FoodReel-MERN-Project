@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const commentModel = require("../models/comment.model");
 const foodModel = require("../models/food.model");
 
@@ -8,6 +9,14 @@ async function addComment(req, res){
 
     if (!text || !text.trim()) {
       return res.status(400).json({ message: "Comment cannot be empty" });
+    }
+
+    const food = await foodModel.findById(foodId);
+
+    if (!food) {
+      return res.status(404).json({
+        message: "Food not found"
+      });
     }
 
     // Add comment to DB
@@ -37,9 +46,17 @@ async function getComments (req, res){
   try {
     const { foodId } = req.params;
 
+    const food = await foodModel.findById(foodId);
+
+    if (!food) {
+      return res.status(404).json({
+        message: "Food not found"
+      });
+    }
+
     const comments = await commentModel
       .find({ food: foodId })
-      .populate("user", "name email")  // only send safe user fields
+      .populate("user", "fullName email")  // only send safe user fields
       .sort({ createdAt: -1 });       // latest first
 
     res.status(200).json({

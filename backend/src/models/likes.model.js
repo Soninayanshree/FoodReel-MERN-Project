@@ -4,16 +4,22 @@ const likeSchema = new mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        require: true
+        required: true
     },
     food:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'food',
-        require: true
+        required: true
     },   
 },{
     timestamps: true
 })
+
+// Prevent duplicate likes by the same user on the same food
+likeSchema.index(
+    { user: 1, food: 1 },
+    { unique: true }
+);
 
 const Like = mongoose.model('like',likeSchema);
 
