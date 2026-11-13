@@ -40,6 +40,19 @@ const errorMiddleware = (err, req, res, next) => {
         message = "Authentication token has expired";
     }
 
+    // Multer file upload errors
+    if (err instanceof require("multer").MulterError) {
+        statusCode = 400;
+
+        if (err.code === "LIMIT_FILE_SIZE") {
+            message = "Video file size exceeds the allowed limit";
+        } else if (err.code === "LIMIT_UNEXPECTED_FILE") {
+            message = "Unexpected file field";
+        } else {
+            message = err.message;
+        }
+    }
+
     // Malformed JSON
     if (
         err instanceof SyntaxError &&

@@ -2,17 +2,13 @@ const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const foodController = require("../controllers/food.controller");
 const router = express.Router();
-const multer = require("multer"); //import multer for file upload
+const upload = require("../config/multer");
 const validateRequest = require("../middlewares/validateRequest.middleware");
 const {
   foodUploadSchema,
   foodIdBodySchema,
 } = require("../validations/request.validation");
-
-//configure multer to store files in memory
-const upload = multer({
-  storage: multer.memoryStorage(),
-});
+const validateFile = require("../middlewares/validateFile.middleware");
 
 /* POST /api/food/ [protected]*/
 
@@ -20,6 +16,7 @@ router.post(
   "/",
   authMiddleware.authFoodPartnerMiddleware,
   upload.single("video"),
+  validateFile("Video"),
   validateRequest(foodUploadSchema),
   foodController.createFood
 );
