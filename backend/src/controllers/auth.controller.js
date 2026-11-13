@@ -6,7 +6,8 @@ const ROLES = require("../../constants/roles");//import roles
 const asyncHandler = require("../utils/asyncHandler");//import async handler
 const ApiError = require("../utils/ApiError");//import api error handler
 
-const registerUser = asyncHandler(async (req, res) => {//register user function
+//register user function
+const registerUser = asyncHandler(async (req, res) => {
     const { fullName, email, password } = req.body;
 
     const isUserAlreadyExists = await userModel.findOne({ email });//check if user already exists
@@ -26,7 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {//register user function
         id: user._id,
         role: ROLES.USER
     }, process.env.JWT_SECRET,
-        { expiresIn: "1h" });//generate token
+        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
@@ -44,7 +45,8 @@ const registerUser = asyncHandler(async (req, res) => {//register user function
     })
 });
 
-const loginUser = asyncHandler(async (req, res) => {//login user function
+//login user function
+const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const user = await userModel.findOne({ email });//find user by email
@@ -63,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {//login user function
         id: user._id,
         role: ROLES.USER
     }, process.env.JWT_SECRET,
-        { expiresIn: "1h" });//generate token
+        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
@@ -82,7 +84,8 @@ const loginUser = asyncHandler(async (req, res) => {//login user function
     })
 });
 
-const logoutUser = asyncHandler(async (req, res) => {//logout user function
+//logout user function
+const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -93,7 +96,8 @@ const logoutUser = asyncHandler(async (req, res) => {//logout user function
     });
 });
 
-const registerFoodPartner = asyncHandler(async (req, res) => {//register food partner function
+//register food partner function
+const registerFoodPartner = asyncHandler(async (req, res) => {
     const { name, email, contact, address, password } = req.body;
 
     const isAccountAlreadyExists = await foodPartnerModel.findOne({ email });
@@ -115,7 +119,7 @@ const registerFoodPartner = asyncHandler(async (req, res) => {//register food pa
         id: foodPartner._id,
         role: ROLES.FOOD_PARTNER
     }, process.env.JWT_SECRET,
-        { expiresIn: "1h" })
+        { expiresIn: process.env.JWT_EXPIRES_IN })
 
     res.cookie("token", token, {
         httpOnly: true,
@@ -135,7 +139,8 @@ const registerFoodPartner = asyncHandler(async (req, res) => {//register food pa
     });
 });
 
-const loginFoodPartner = asyncHandler(async (req, res) => {//login food partner function
+//login food partner function
+const loginFoodPartner = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const foodPartner = await foodPartnerModel.findOne({ email });//find food partner by email
@@ -153,7 +158,7 @@ const loginFoodPartner = asyncHandler(async (req, res) => {//login food partner 
         id: foodPartner._id,
         role: ROLES.FOOD_PARTNER
     }, process.env.JWT_SECRET,
-        { expiresIn: "1h" });//generate token
+        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
@@ -172,7 +177,8 @@ const loginFoodPartner = asyncHandler(async (req, res) => {//login food partner 
     });
 });
 
-const logoutFoodPartner = asyncHandler(async (req, res) => {//logout food partner function
+//logout food partner function
+const logoutFoodPartner = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
