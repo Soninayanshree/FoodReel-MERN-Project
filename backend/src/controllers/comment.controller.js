@@ -1,26 +1,24 @@
 
 const commentModel = require("../models/comment.model");
 const foodModel = require("../models/food.model");
+const ApiError = require("../utils/ApiError");
+const asyncHandler = require("../utils/asyncHandler");
 
-async function addComment(req, res, next) {
-  try {
+//add comment
+const addComment = asyncHandler( async(req, res) => {
     const { foodId, text } = req.body;
     const user = req.user;
 
     // Check if comment text is empty
     if (!text || !text.trim()) {
-      const error = new Error("Comment cannot be empty");
-      error.statusCode = 400;
-      return next(error);
+      throw new ApiError(400, "Comment text cannot be empty");
     }
 
     // Check if food exists in database
     const food = await foodModel.findById(foodId);
 
     if (!food) {
-      const error = new Error("Food not found");
-      error.statusCode = 404;
-      return next(error);
+      throw new ApiError(404, "Food not found");
     }
 
     // Add comment to DB
@@ -39,23 +37,17 @@ async function addComment(req, res, next) {
       message: "Comment added successfully",
       comment,
     });
+});
 
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function getComments(req, res, next) {
-  try {
+//get comments
+const getComments = asyncHandler(async(req, res) => {
     const { foodId } = req.params;
 
     // Check if food exists in database
     const food = await foodModel.findById(foodId);
 
     if (!food) {
-      const error = new Error("Food not found");
-      error.statusCode = 404;
-      return next(error);
+      throw new ApiError(404, "Food not found");
     }
 
     // Fetch comments with user details
@@ -68,11 +60,7 @@ async function getComments(req, res, next) {
       message: "Comments fetched successfully",
       comments,
     });
-
-  } catch (error) {
-    next(error);
-  }
-}
+});
 
 module.exports = {
   addComment,
