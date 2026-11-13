@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model");//import user model
 const foodPartnerModel = require("../models/foodpartner.model");//import food partner model
+const env = require("../config/env");//import env config
 const bcrypt = require("bcryptjs");//import bcrypt for password hashing
 const jwt = require("jsonwebtoken");//import jwt for token generation
 const ROLES = require("../../constants/roles");//import roles
@@ -26,12 +27,12 @@ const registerUser = asyncHandler(async (req, res) => {
     const token = jwt.sign({
         id: user._id,
         role: ROLES.USER
-    }, process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
+    }, env.JWT_SECRET,
+        { expiresIn: env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//set cookie
 
@@ -64,12 +65,12 @@ const loginUser = asyncHandler(async (req, res) => {
     const token = jwt.sign({
         id: user._id,
         role: ROLES.USER
-    }, process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
+    }, env.JWT_SECRET,
+        { expiresIn: env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//set cookie
 
@@ -88,7 +89,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//clear cookie
     res.status(200).json({
@@ -118,12 +119,12 @@ const registerFoodPartner = asyncHandler(async (req, res) => {
     const token = jwt.sign({
         id: foodPartner._id,
         role: ROLES.FOOD_PARTNER
-    }, process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN })
+    }, env.JWT_SECRET,
+        { expiresIn: env.JWT_EXPIRES_IN })
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//set cookie
 
@@ -157,12 +158,12 @@ const loginFoodPartner = asyncHandler(async (req, res) => {
     const token = jwt.sign({
         id: foodPartner._id,
         role: ROLES.FOOD_PARTNER
-    }, process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN });//generate token
+    }, env.JWT_SECRET,
+        { expiresIn: env.JWT_EXPIRES_IN });//generate token
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//set cookie
 
@@ -181,7 +182,7 @@ const loginFoodPartner = asyncHandler(async (req, res) => {
 const logoutFoodPartner = asyncHandler(async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
     });//clear cookie
     res.status(200).json({

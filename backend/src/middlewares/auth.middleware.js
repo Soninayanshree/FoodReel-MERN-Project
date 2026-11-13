@@ -1,5 +1,6 @@
 const foodPartnerModel = require("../models/foodpartner.model");
 const userModel = require("../models/user.model");
+const env = require("../config/env");
 const ROLES = require("../../constants/roles");
 const jwt = require("jsonwebtoken");
 const ApiError = require("../utils/ApiError");
@@ -12,7 +13,7 @@ const authFoodPartnerMiddleware = asyncHandler(async (req, res, next) => {
     if (!token) {
         throw new ApiError(401, "Please login first");
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);//verify token
+    const decoded = jwt.verify(token, env.JWT_SECRET);//verify token
     if (decoded.role !== ROLES.FOOD_PARTNER) {
         throw new ApiError(403, "Access denied");
     }
@@ -34,7 +35,7 @@ const authUserMiddleware = asyncHandler(async (req, res, next) => {
     if (!token) {
         throw new ApiError(401, "Please login first");
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // verify token
+    const decoded = jwt.verify(token, env.JWT_SECRET); // verify token
     if (decoded.role !== ROLES.USER) {
         throw new ApiError(403, "Access denied");
     }
