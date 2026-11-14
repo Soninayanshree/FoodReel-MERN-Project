@@ -2,7 +2,7 @@ const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const foodController = require("../controllers/food.controller");
 const router = express.Router();
-const upload = require("../config/multer");
+const upload = require("../config/multer");  
 const validateRequest = require("../middlewares/validateRequest.middleware");
 const {
   foodUploadSchema,
