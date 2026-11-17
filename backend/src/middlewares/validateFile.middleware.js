@@ -2,18 +2,15 @@
  * Reusable file validation middleware
  * Checks whether the required file is uploaded.
  */
+const AppError = require("../utils/appError");
 
 function validateFile(fieldName) {
   return (req, res, next) => {
     // Check if the uploaded file exists
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: `${fieldName} file is required`,
-      });
+      throw new AppError(400, `Missing required file: ${fieldName}`);
     }
-
-    next();
+   next();
   };
 }
 

@@ -10,7 +10,7 @@ const getFoodPartnerById = asyncHandler(async (req, res) => {
     if (!foodPartner) {
         throw new ApiError(404, "Food partner not found");
     }
-    const foodItemsByFoodPArtner = await foodModel.find({ foodPartner: foodPartnerId })
+    const foodItemsByFoodPartner = await foodModel.find({ foodPartner: foodPartnerId })
 
     res.status(200).json({
         message: "food partner retrieve successfully",
@@ -20,7 +20,7 @@ const getFoodPartnerById = asyncHandler(async (req, res) => {
             email: foodPartner.email,
             contact: foodPartner.contact,
             address: foodPartner.address,
-            foodItems: foodItemsByFoodPArtner
+            foodItems: foodItemsByFoodPartner
         }
     });
 });

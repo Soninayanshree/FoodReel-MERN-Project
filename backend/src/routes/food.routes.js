@@ -2,7 +2,7 @@ const express = require("express");
 const authMiddleware = require("../middlewares/auth.middleware");
 const foodController = require("../controllers/food.controller");
 const router = express.Router();
-const upload = require("../config/multer");  
+const upload = require("../config/multer");
 const validateRequest = require("../middlewares/validateRequest.middleware");
 const {
   foodUploadSchema,
@@ -23,8 +23,8 @@ router.post(
 //here we are using the authFoodPartnerMiddleware to protect the route and then calling the createFood controller function to handle the request.The upload.single("video") middleware will process the incoming request and store the uploaded file in req.file
 
 router.get(
-    "/",
-    foodController.getFoodItems);
+  "/",
+  foodController.getFoodItems);
 
 router.post(
   "/like",

@@ -22,7 +22,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     if (!allowedVideoTypes.includes(file.mimetype)) {
       const error = new Error(
-        "Only MP4, WebM, and MOV videos are allowed"
+        "Only MP4, MPEG, WebM, and MOV videos are allowed"
       );
 
       error.statusCode = 400;
