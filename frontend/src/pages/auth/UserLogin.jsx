@@ -1,6 +1,7 @@
 import React from 'react';
 import '../../styles/form.css';
-import axios from 'axios';
+// import axios from 'axios';
+import api from '../../api/axios'
 import { useNavigate, Link } from 'react-router-dom';
 import user_login_img from '../../assets/images/user_login_img1.png';
 
@@ -14,14 +15,11 @@ const UserLogin = () => {
     const password = e.target.password.value;
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/auth/user/login',
+      const response = await api.post(
+        '/auth/user/login',
         {
           email,
           password,
-        },
-        {
-          withCredentials: true,
         }
       );
 

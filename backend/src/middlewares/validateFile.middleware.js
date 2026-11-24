@@ -2,7 +2,7 @@
  * Reusable file validation middleware
  * Checks whether the required file is uploaded.
  */
-const AppError = require("../utils/appError");
+const AppError = require("../utils/ApiError");
 
 function validateFile(fieldName) {
   return (req, res, next) => {

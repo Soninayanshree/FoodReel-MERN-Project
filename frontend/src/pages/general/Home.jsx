@@ -11,7 +11,7 @@ const Home = () => {
   const [videos, setVideos] = useState([]);
   const [saved, setSaved] = useState([]);
   const [likes, setLikes] = useState({});
-  const [counts, setCounts] = useState({});
+  // const [counts, setCounts] = useState({});
   const [commentBox, setCommentBox] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [allComments, setAllComments] = useState({});
@@ -22,31 +22,29 @@ const Home = () => {
   useEffect(() => {
     let isMounted = true;
 
-    axios
-      .get("http://localhost:3000/api/food", { withCredentials: true })
-      .then((response) => {
-        // console.log(response.data);
+    const videos = videoRefs.current;
 
+    axios
+      .get("http://localhost:5000/api/food", { withCredentials: true })
+      .then((response) => {
         if (isMounted) {
           const items = response.data.foodItems || response.data;
-
           setVideos(items);
-
-          const stored = JSON.parse(localStorage.getItem("counts")) || {};
-          setCounts(stored);//load count from local storage
         }
       })
       .catch((err) => console.error("Fetch error:", err));
 
     return () => {
       isMounted = false;
-      videoRefs.current.forEach((video) => {
+
+      videos.forEach((video) => {
         if (video) {
           video.pause();
           video.src = "";
         }
       });
-      videoRefs.current.clear();
+
+      videos.clear();
     };
   }, []);
 
@@ -66,7 +64,7 @@ const Home = () => {
         entries.forEach((entry) => {
           const video = entry.target;
           if (entry.isIntersecting) {
-            video.play().catch(() => {});
+            video.play().catch(() => { });
           } else {
             video.pause();
           }
@@ -112,7 +110,7 @@ const Home = () => {
   async function saveVideo(item) {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/food/save",
+        "http://localhost:5000/api/food/save",
         { foodId: item._id },
         { withCredentials: true }
       );
@@ -128,9 +126,9 @@ const Home = () => {
         prev.map((v) =>
           v._id === item._id
             ? {
-                ...v,
-                savesCount: isSaved ? v.savesCount + 1 : v.savesCount - 1,
-              }
+              ...v,
+              savesCount: isSaved ? v.savesCount + 1 : v.savesCount - 1,
+            }
             : v
         )
       );
@@ -144,7 +142,7 @@ const Home = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/${foodId}`,
+        `http://localhost:5000/api/comments/${foodId}`,
         { withCredentials: true }
       );
 
@@ -162,7 +160,7 @@ const Home = () => {
 
     try {
       await axios.post(
-        "http://localhost:3000/api/comments/${foodId}",
+        "http://localhost:5000/api/comments/${foodId}",
         {
           foodId: commentBox,
           text: commentText,
